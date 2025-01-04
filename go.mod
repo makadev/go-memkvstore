@@ -1,3 +1,3 @@
-module example.com/go_module
+module github.com/makadev/go-memkvstore
 
 go 1.23.2
