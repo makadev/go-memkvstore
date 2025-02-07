@@ -1,13 +1,15 @@
-package go_memkvstore
+package go_memkvstore_test
 
 import (
 	"fmt"
 	"testing"
 	"time"
+
+	mkvstore "github.com/makadev/go-memkvstore"
 )
 
 func TestStore(t *testing.T) {
-	mkv := New[string](1 * time.Minute)
+	mkv := mkvstore.New[string](1 * time.Minute)
 	mkv.Set("test", "value")
 
 	value, ok := mkv.Get("test", "")
@@ -20,7 +22,7 @@ func TestStore(t *testing.T) {
 }
 
 func TestMKVSExpiration(t *testing.T) {
-	mkv := New[string](100 * time.Millisecond)
+	mkv := mkvstore.New[string](100 * time.Millisecond)
 	mkv.Set("test", "value")
 
 	value, ok := mkv.Get("test", "")
@@ -44,7 +46,7 @@ func TestMKVSExpiration(t *testing.T) {
 }
 
 func TestMKVSDelete(t *testing.T) {
-	mkv := New[string](1 * time.Minute)
+	mkv := mkvstore.New[string](1 * time.Minute)
 	mkv.Set("test", "value")
 
 	value, ok := mkv.Get("test", "")
@@ -67,7 +69,7 @@ func TestMKVSDelete(t *testing.T) {
 }
 
 func TestMKVSCleanup(t *testing.T) {
-	mkv := New[string](1 * time.Millisecond)
+	mkv := mkvstore.New[string](1 * time.Millisecond)
 	mkv.Set("test", "value")
 	mkv.SetWithExpiration("test2", "value2", 2000*time.Millisecond)
 
@@ -112,7 +114,7 @@ func TestMKVSCleanup(t *testing.T) {
 }
 
 func BenchmarkAddMKVS(b *testing.B) {
-	mkv := New[string](1 * time.Hour)
+	mkv := mkvstore.New[string](1 * time.Hour)
 	testdata := make([]string, 1000)
 
 	for i := 0; i < 1000; i++ {
@@ -126,7 +128,7 @@ func BenchmarkAddMKVS(b *testing.B) {
 }
 
 func BenchmarkLookupMKVS(b *testing.B) {
-	mkv := New[string](1 * time.Hour)
+	mkv := mkvstore.New[string](1 * time.Hour)
 	testdata := make([]string, 1000)
 
 	for idx := range testdata {
@@ -141,7 +143,7 @@ func BenchmarkLookupMKVS(b *testing.B) {
 }
 
 func BenchmarkDeletesMKVS(b *testing.B) {
-	mkv := New[string](1 * time.Hour)
+	mkv := mkvstore.New[string](1 * time.Hour)
 	testdata := make([]string, 1000)
 
 	for idx := range testdata {
