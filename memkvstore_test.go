@@ -8,7 +8,7 @@ import (
 	mkvstore "github.com/makadev/go-memkvstore"
 )
 
-func TestStore(t *testing.T) {
+func TestStoreGet(t *testing.T) {
 	mkv := mkvstore.New[string](1 * time.Minute)
 	mkv.Set("test", "value")
 
@@ -18,6 +18,32 @@ func TestStore(t *testing.T) {
 	}
 	if value != "value" {
 		t.Errorf("Expected value to be 'value'")
+	}
+}
+
+func TestStoreGetWithExpiration(t *testing.T) {
+	mkv := mkvstore.New[string](1 * time.Minute)
+	mkv.Set("test", "value")
+
+	value, expires, ok := mkv.GetWithExpiration("test", "")
+	if !ok {
+		t.Errorf("Expected value to be found")
+	}
+	if value != "value" {
+		t.Errorf("Expected value to be 'value'")
+	}
+
+	if expires.IsZero() {
+		t.Errorf("Expected expiration to be set")
+	}
+
+	// assuming the test runs in less than 1 minute this should be true
+	if !expires.After(time.Now().UTC()) {
+		t.Errorf("Expected expiration to be in the past")
+	}
+
+	if !expires.Before(time.Now().UTC().Add(1 * time.Minute).Add(1 * time.Second)) {
+		t.Errorf("Expected expiration to be in the future")
 	}
 }
 

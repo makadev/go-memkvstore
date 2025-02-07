@@ -44,6 +44,20 @@ func (m *Store[V]) Get(key string, noValue V) (V, bool) {
 	return item.Value, true
 }
 
+func (m *Store[V]) GetWithExpiration(key string, noValue V) (V, time.Time, bool) {
+	now := time.Now().UTC()
+	m.RLock()
+	defer m.RUnlock()
+	item, ok := m.Store[key]
+	if !ok {
+		return noValue, time.Time{}, false
+	}
+	if item.IsExpired(now) {
+		return noValue, time.Time{}, false
+	}
+	return item.Value, item.Expiration, true
+}
+
 // Set sets an item in the memory store with default expiration
 func (m *Store[V]) Set(key string, value V) {
 	now := time.Now().UTC()
