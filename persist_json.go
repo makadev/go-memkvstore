@@ -16,7 +16,7 @@ func NewJSONStorePersister[T any](filename string, kvstore *Store[T]) *JSONStore
 
 func (m *JSONStorePersister[V]) Write() error {
 	// open file with create, write and truncate flags
-	f, err := os.OpenFile(m.filename, os.O_CREATE|os.O_WRONLY|os.O_TRUNC|os.O_EXCL, 0644)
+	f, err := os.OpenFile(m.filename, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
 	if err != nil {
 		return err
 	}
@@ -35,7 +35,7 @@ func (m *JSONStorePersister[V]) Write() error {
 
 func (m *JSONStorePersister[V]) Read() error {
 	// open file with read flag
-	f, err := os.OpenFile(m.filename, os.O_RDONLY|os.O_EXCL, 0644)
+	f, err := os.OpenFile(m.filename, os.O_RDONLY, 0644)
 	if err != nil {
 		return err
 	}
